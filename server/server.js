@@ -25,3 +25,14 @@ var handleRequest = function(request, response) {
 
 var httpsServer = https.createServer(serverConfig, handleRequest);
 httpsServer.listen(HTTPS_PORT);
+
+// Create a server for handling websocket calls
+var wss = new WebSocketServer({server: httpsServer});
+
+wss.on('connection', function(ws) {
+    ws.on('message', function(message) {
+        
+    });
+});
+
+console.log('Server initialized and running on https://localhost:' + HTTPS_PORT);
