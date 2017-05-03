@@ -3,6 +3,7 @@ const HTTPS_PORT = 8080;
 const TYPE_INITIAL_HANDSHAKE = 0;
 const TYPE_SDP_CONNECTION = 1;
 const TYPE_ICE_INFO = 2;
+const TYPE_BITRATE_CHANGED_INFO = 3;
 
 const CHANGE_LOCAL_BITRATE_EVENT_NAME = "video-conf-local-bitrate-change";
 const CHANGE_REMOTE_BITRATE_EVENT_NAME = "video-conf-remote-bitrate-change";
@@ -61,10 +62,58 @@ function pageReady() {
 function getOptimalVideoParams() {
     //TODO - Detect the bandwith and customize video params
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-    return mediaParams = {
-        video: { facingMode: "user" }, //prioritize front facing camera 
-        audio: false,
-    };
+    var idealFramerate = 24;
+    var maximumFrameRate = 25;
+
+    var isAudioEnabled = true;
+    var isVideoEnabled = true;
+
+    var idealResolution = [1024, 768]; //Index 0 - width, 1 - height
+    var maxResolution = [1280, 720]; //Index 0 - width, 1 - height
+
+    if (currentBitrate < 0.01) { //lowest quality
+        isVideoEnabled = false;
+        isAudioEnabled = false;
+    } else if (currentBitrate < 0.1) {
+        isVideoEnabled = false;
+    } else if (currentBitrate < 0.5) {
+
+    } else if (currentBitrate < 1) {
+
+    } else if (currentBitrate < 2) { //2mbps - can provide a good quality
+
+    }
+
+    var mediaParams = {}
+    if (!isVideoEnabled) {
+        mediaParams.video = false;
+    } else {
+        mediaParams.video = {
+            width: {
+                ideal: idealResolution[0],
+                max: maxResolution[0]
+            },
+            height: {
+                ideal: idealResolution[1],
+                max: maxResolution[1]
+            },
+            framerate: {
+                ideal: idealFramerate,
+                max: maximumFrameRate
+            },
+            facingMode: "user" //prioritize front facing camera 
+        }
+    }
+
+    if (!isAudioEnabled) {
+        mediaParams.audio = false;
+    } else {
+        mediaParams.audio = {
+
+        }
+    }
+
+    return mediaParams;
 }
 
 function start(isCaller) {
@@ -131,6 +180,11 @@ function onCreateVideoDesc(description) {
 
 function onLocalBitrateChange(data) {
     console.log("Bitrate change event received - New bitrate " + data.detail);
+    serverConnection.send(JSON.stringify({ //inform the remote user
+        'type': TYPE_BITRATE_CHANGED_INFO,
+        'bitrate': data.detail, 
+        'id': id
+    }));
 }
 
 function errorHandler(error) {
@@ -171,9 +225,31 @@ function listenToBandwithStats() {
         }, 2000);
     } else {
         console.log("Using Chrome/WebKit stats API");
+        var t = 0;
         stats = getStats(peerConnection, function (result) {
-            console.log(result);
-        }, 1000);
+            try {
+                var bandwidth = result.video.bandwidth.googTransmitBitrate;
+                if (bandwidth) {
+                    bandwidth = parseInt(bandwidth);
+                    var bitrate = (bandwidth/1000000).toFixed(2); //convert to mbps
+
+                    if (shouldTransmitBitrateEvent(bitrate)) {
+                        var event = new CustomEvent(CHANGE_LOCAL_BITRATE_EVENT_NAME, {
+                            "detail": bitrate  
+                        })
+
+                        document.dispatchEvent(event); //transmit the event
+                        console.log("Bitrate change event transmitted - Bitrate " + bitrate + " Mbps");
+                    } else {
+                        console.log("New bitrate " + bitrate + " not transmitted | Previous bitrate " + currentBitrate);
+                    }
+
+                    currentBitrate = bitrate;
+                }
+            } catch (err) {
+                console.log("Bandwidth calculation failed");
+            }
+        }, 2000);
     }
 }
 
