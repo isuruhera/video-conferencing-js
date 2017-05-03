@@ -107,6 +107,8 @@ function peerOnIceCandidateCallback(event) {
 function peerOnAddStreamCallback(event) {
     console.log('Received remote stream');
     remoteUserVideoElement.src = window.URL.createObjectURL(event.stream);
+    
+    listenToBandwithStats();
 }
 
 function onCreateVideoDesc(description) {
@@ -121,4 +123,25 @@ function onCreateVideoDesc(description) {
 
 function errorHandler(error) {
     console.log(error);
+}
+
+
+function listenToBandwithStats() {
+    if (navigator.mozGetUserMedia) { 
+        console.log("Using Firefox stats API");
+        setInterval(function() {
+            peerConnection.getStats(peerConnection.getRemoteStreams()[0].getVideoTracks()[0], function(results) {
+                var obj = results.inbound_rtp_video_0;
+                if (obj) {
+                    var bitrate = (obj.bitrateMean/1000000).toFixed(2);
+                    console.log("Bitrate " + bitrate + " Mbps");
+                }
+            }, errorHandler);
+        }, 1000);
+    } else {
+        console.log("Using Chrome/WebKit stats API");
+        stats = getStats(peerConnection, function (result) {
+            console.log(result);
+        }, 1000);
+    }
 }
