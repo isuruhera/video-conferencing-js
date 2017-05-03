@@ -4,6 +4,9 @@ const TYPE_INITIAL_HANDSHAKE = 0;
 const TYPE_SDP_CONNECTION = 1;
 const TYPE_ICE_INFO = 2;
 
+const CHANGE_LOCAL_BITRATE_EVENT_NAME = "video-conf-local-bitrate-change";
+const CHANGE_REMOTE_BITRATE_EVENT_NAME = "video-conf-remote-bitrate-change";
+
 var selfVideoElement;
 var remoteUserVideoElement;
 
@@ -13,6 +16,9 @@ var serverConnection;
 var id = "TEMP"; //TODO - get it from user
 
 var stats;
+
+var currentBitrate = 1;
+var currentBitrateChangeTolerance = 0;
 
 //ICE servers are required for webRTC to function specially if the users 
 //are behind NAT or a firewall
@@ -45,6 +51,8 @@ function pageReady() {
             localStream = stream;
             selfVideoElement.src = window.URL.createObjectURL(stream); //start showing the video on page ready
         }).catch(errorHandler);
+
+        document.addEventListener(CHANGE_LOCAL_BITRATE_EVENT_NAME, onLocalBitrateChange);
     } else {
         alert('Sorry, your browser does not support WebRTC');
     }
@@ -107,7 +115,7 @@ function peerOnIceCandidateCallback(event) {
 function peerOnAddStreamCallback(event) {
     console.log('Received remote stream');
     remoteUserVideoElement.src = window.URL.createObjectURL(event.stream);
-    
+
     listenToBandwithStats();
 }
 
@@ -121,6 +129,10 @@ function onCreateVideoDesc(description) {
     }).catch(errorHandler);
 }
 
+function onLocalBitrateChange(data) {
+    console.log("Bitrate change event received - New bitrate " + data.detail);
+}
+
 function errorHandler(error) {
     console.log(error);
 }
@@ -129,19 +141,81 @@ function errorHandler(error) {
 function listenToBandwithStats() {
     if (navigator.mozGetUserMedia) { 
         console.log("Using Firefox stats API");
+
         setInterval(function() {
-            peerConnection.getStats(peerConnection.getRemoteStreams()[0].getVideoTracks()[0], function(results) {
-                var obj = results.inbound_rtp_video_0;
-                if (obj) {
-                    var bitrate = (obj.bitrateMean/1000000).toFixed(2);
-                    console.log("Bitrate " + bitrate + " Mbps");
+            var selector = getStreamToListenOn();
+            peerConnection.getStats(selector).then(function(report) {
+                console.log("Stats report received");
+
+                var selectedReportType;
+                report.forEach(function(element) {
+                    if (element.type == "inbound-rtp" || element.type == "inboundrtp") {
+                        selectedReportType = element;
+                    }
+                });
+                
+                var bitrate = (selectedReportType.bitrateMean/1000000).toFixed(2); //convert to mbps
+                if (shouldTransmitBitrateEvent(bitrate)) {
+                    var event = new CustomEvent(CHANGE_LOCAL_BITRATE_EVENT_NAME, {
+                            "detail": bitrate  
+                        })
+
+                    document.dispatchEvent(event); //transmit the event
+                    console.log("Bitrate change event transmitted - Bitrate " + bitrate + " Mbps");
+                } else {
+                    console.log("New bitrate " + bitrate + " not transmitted | Previous bitrate " + currentBitrate);
                 }
-            }, errorHandler);
-        }, 1000);
+
+                currentBitrate = bitrate;
+            }).catch(errorHandler);
+        }, 2000);
     } else {
         console.log("Using Chrome/WebKit stats API");
         stats = getStats(peerConnection, function (result) {
             console.log(result);
         }, 1000);
+    }
+}
+
+//Check the tolerance to transmit the bitrate change event
+function shouldTransmitBitrateEvent(newBitrate) {
+    if (currentBitrate == 0) {
+        return true; //always transmit if bitrate was 0 before
+    }
+
+    if (currentBitrate == newBitrate) {
+        return false;
+    }
+
+    var toleranceThreshold = 0.2;
+    currentBitrateChangeTolerance += Math.abs(currentBitrate - newBitrate);
+    if (currentBitrateChangeTolerance > toleranceThreshold) {
+        currentBitrateChangeTolerance = 0;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+//get the stream that the application should use to 
+//calculate the current bitrate (preferably the remote user's video stream)
+//Supported in Firefox only
+function getStreamToListenOn() {
+    try {
+        var availableStreams = peerConnection.getReceivers();
+        var selectedStream;
+        if (availableStreams) {
+            for (var stream of availableStreams) {
+                selectedStream = stream.track;
+
+                if (selectedStream.kind == "video") {
+                    break; //prioritize video stream (if available)
+                }
+            }
+        }
+
+        return selectedStream;
+    } catch (error) { //Browser does not support peerConnection.getReceivers()
+        console.log("Unable to detect bandwith in this browser");
     }
 }
