@@ -1,12 +1,18 @@
 const HTTPS_PORT = 8080;
 
+const TYPE_INITIAL_HANDSHAKE = 0;
+const TYPE_SDP_CONNECTION = 1;
+const TYPE_ICE_INFO = 2;
+
 var selfVideoElement;
 var remoteUserVideoElement;
 
 var peerConnection;
 var serverConnection;
 
-var id = "TEMP"; //TODO - get from server
+var id = "TEMP"; //TODO - get it from user
+
+var stats;
 
 //ICE servers are required for webRTC to function specially if the users 
 //are behind NAT or a firewall
@@ -18,13 +24,20 @@ const peerConfiguration = {
 };
 
 function pageReady() {
-    id = uuid();
-
     remoteUserVideoElement = document.getElementById('remoteVideo');
     selfVideoElement = document.getElementById('localVideo');
     
     serverConnection = new WebSocket('wss://' + window.location.hostname + ':' + HTTPS_PORT);
     serverConnection.onmessage = serverOnMessageCallback;
+    serverConnection.onopen = function(event) {
+        var msg = {
+            "type": TYPE_INITIAL_HANDSHAKE,
+            "id": id,
+            "date": Date.now()
+        };
+
+        serverConnection.send(JSON.stringify(msg));
+    };
 
     if (navigator.mediaDevices.getUserMedia) {
         var promise = navigator.mediaDevices.getUserMedia(getOptimalVideoParams());
@@ -42,7 +55,7 @@ function getOptimalVideoParams() {
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
     return mediaParams = {
         video: { facingMode: "user" }, //prioritize front facing camera 
-        audio: true,
+        audio: false,
     };
 }
 
@@ -67,7 +80,7 @@ function serverOnMessageCallback(message) {
 
     // Ignore messages from ourself
     if (signal.id == id) {
-        return;
+        //return;
     }
 
     if (signal.sdp) {
@@ -83,7 +96,11 @@ function serverOnMessageCallback(message) {
 
 function peerOnIceCandidateCallback(event) {
     if(event.candidate != null) {
-        serverConnection.send(JSON.stringify({'ice': event.candidate, 'id': id}));
+        serverConnection.send(JSON.stringify({
+            'type': TYPE_ICE_INFO,
+            'ice': event.candidate, 
+            'id': id
+        }));
     }
 }
 
@@ -94,7 +111,11 @@ function peerOnAddStreamCallback(event) {
 
 function onCreateVideoDesc(description) {
     peerConnection.setLocalDescription(description).then(function() {
-        serverConnection.send(JSON.stringify({'sdp': peerConnection.localDescription, 'id': id}));
+        serverConnection.send(JSON.stringify({
+            'type': TYPE_SDP_CONNECTION,
+            'sdp': peerConnection.localDescription, 
+            'id': id
+        }));
     }).catch(errorHandler);
 }
 
