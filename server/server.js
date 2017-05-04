@@ -3,6 +3,7 @@ const HTTPS_PORT = 8080;
 const TYPE_INITIAL_HANDSHAKE = 0;
 const TYPE_SDP_CONNECTION = 1;
 const TYPE_ICE_INFO = 2;
+const TYPE_CHAT_MESSAGE = 4;
 
 const fs = require('fs');
 const https = require('https');
@@ -52,6 +53,10 @@ wss.on('connection', function(ws) {
             break;
 
             case TYPE_ICE_INFO:
+            wss.broadcast(message);
+            break;
+
+            case TYPE_CHAT_MESSAGE:
             wss.broadcast(message);
             break;
         }
