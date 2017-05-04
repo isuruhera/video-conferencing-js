@@ -1,0 +1,143 @@
+<html>
+
+<head>
+
+    <!-- Material Design Theming -->
+    <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.orange-indigo.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+
+
+
+
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase-auth.js"></script>
+
+
+
+
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyD9_jmiGv51xB9SQSZwv31isZNI3Eb8Aq4",
+            authDomain: "webrtc750.firebaseapp.com",
+            databaseURL: "https://webrtc750.firebaseio.com",
+            projectId: "webrtc750",
+            storageBucket: "webrtc750.appspot.com",
+            messagingSenderId: "371568173906"
+        };
+        firebase.initializeApp(config);
+
+        var provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/plus.login');
+        provider.setCustomParameters({
+            'login_hint': 'user@example.com'
+        });
+
+
+
+        firebase.auth().signInWithPopup(provider).then(function (result) {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            var token = result.credential.accessToken;
+            // The signed-in user info.
+            var user = result.user;
+
+            if (user) {
+                // User is signed in.
+                var displayName = user.displayName;
+                var email = user.email;
+                var emailVerified = user.emailVerified;
+                var photoURL = user.photoURL;
+                var uid = user.uid;
+                var providerData = user.providerData;
+                user.getToken().then(function (accessToken) {
+
+                    sessionStorage["session-id"]=user.uid;
+                    sessionStorage["session-name"]=user.displayName;
+
+
+                    // document.getElementById('sign-in-status').textContent = 'Signed in';
+                    // document.getElementById('sign-in').textContent = 'Sign out';
+                    // document.getElementById('account-details').textContent = JSON.stringify({
+                    //     displayName: displayName,
+                    //     email: email,
+                    //     emailVerified: emailVerified,
+                    //     photoURL: photoURL,
+                    //     uid: uid,
+                    //     accessToken: accessToken,
+                    //     providerData: providerData
+                    // }, null, '  ');
+                });
+            } else {
+                // User is signed out.
+                document.getElementById('sign-in-status').textContent = 'Signed out';
+                document.getElementById('sign-in').textContent = 'Sign in';
+                document.getElementById('account-details').textContent = 'null';
+            }
+
+
+            // ...
+        }).catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // The email of the user's account used.
+            var email = error.email;
+            // The firebase.auth.AuthCredential type that was used.
+            var credential = error.credential;
+            // ...
+        });
+
+
+        firebase.auth().signOut().then(function () {
+            // Sign-out successful.
+        }).catch(function (error) {
+            // An error happened.
+        });
+    </script>
+
+    <!--FirebaseUI -->
+    <script src="https://cdn.firebase.com/libs/firebaseui/1.0.1/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.1/firebaseui.css" />
+    <script>
+        // FirebaseUI config.
+
+
+        var uiConfig = {
+            signInSuccessUrl: '/app',
+
+            signInOptions: [
+                // Leave the lines as is for the providers you want to offer your users.
+                firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+                //   firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+                //   firebase.auth.GithubAuthProvider.PROVIDER_ID,
+                //   firebase.auth.EmailAuthProvider.PROVIDER_ID
+            ],
+            // Terms of service url.
+            tosUrl: '<your-tos-url>'
+        };
+
+        // Initialize the FirebaseUI Widget using Firebase.
+        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+        // The start method will wait until the DOM is loaded.
+        ui.start('#firebaseui-auth-container', uiConfig);
+    </script>
+
+</head>
+
+<body>
+    <h1>Welcome to My Awesome App</h1>
+    <div id="firebaseui-auth-container"></div>
+
+
+    <h1>Welcome to My Awesome App index</h1>
+    <div id="sign-in-status"></div>
+    <div id="sign-in"></div>
+    <div id="account-details"></div>
+
+    <br />
+</body>
+
+</html>
