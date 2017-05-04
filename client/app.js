@@ -209,7 +209,8 @@ function onChatMessageReceived(data) {
 
 //Called when the user send a chat message
 function onSendChatMessage() {
-    var message = "Message "; //todo get form UI
+    var textBox = document.getElementById("chat");
+    var message = textBox.value;
     serverConnection.send(JSON.stringify({
         'type': TYPE_CHAT_MESSAGE,
         'chat': message, 
