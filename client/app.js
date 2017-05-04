@@ -4,6 +4,7 @@ const TYPE_INITIAL_HANDSHAKE = 0;
 const TYPE_SDP_CONNECTION = 1;
 const TYPE_ICE_INFO = 2;
 const TYPE_BITRATE_CHANGED_INFO = 3;
+const TYPE_CHAT_MESSAGE = 4;
 
 const CHANGE_LOCAL_BITRATE_EVENT_NAME = "video-conf-local-bitrate-change";
 const CHANGE_REMOTE_BITRATE_EVENT_NAME = "video-conf-remote-bitrate-change";
@@ -44,6 +45,7 @@ function pageReady() {
         var msg = {
             "type": TYPE_INITIAL_HANDSHAKE,
             "id": id,
+            "name": name,
             "date": Date.now()
         };
 
@@ -154,6 +156,8 @@ function serverOnMessageCallback(message) {
         peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice)).catch(errorHandler);
     } else if (signal.bitrate) {
         onRemoteBitrateChange(signal.bitrate);
+    } else if (signal.chat) {
+        onChatMessageReceived(signal);
     }
 }
 
@@ -198,11 +202,27 @@ function onRemoteBitrateChange(data) {
 
 }
 
+//Called when the remote party send a chat message
+function onChatMessageReceived(data) {
+
+}
+
+//Called when the user send a chat message
+function onSendChatMessage() {
+    var message = "Message "; //todo get form UI
+    serverConnection.send(JSON.stringify({
+        'type': TYPE_CHAT_MESSAGE,
+        'chat': message, 
+        'id': id,
+        "name": name
+    }));
+}
+
 function errorHandler(error) {
     console.log(error);
 }
 
-
+//Listen to bandwidth stats from the streams
 function listenToBandwithStats() {
     if (navigator.mozGetUserMedia) { 
         console.log("Using Firefox stats API");
