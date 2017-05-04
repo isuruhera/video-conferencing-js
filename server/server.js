@@ -13,21 +13,37 @@ const WebSocket = require('ws');
 // SSL is required for the WebRTC connections for Chrome. We use a temporary self-signed certificate
 // https://tokbox.com/blog/the-impact-of-googles-new-chrome-security-policy-on-webrtc/
 const serverConfig = {
-    key: fs.readFileSync('./key.pem'),
-    cert: fs.readFileSync('./cert.pem'),
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem'),
 };
 
 // Create a server for the client html page
 var handleRequest = function(request, response) {
     if(request.url === '/') {
         response.writeHead(200, {'Content-Type': 'text/html'});
-        response.end(fs.readFileSync('../client/login.html'));
+        response.end(fs.readFileSync('client/login.html'));
     } else if(request.url === '/app.js') {
         response.writeHead(200, {'Content-Type': 'application/javascript'});
-        response.end(fs.readFileSync('../client/app.js'));
-    }else if(request.url === '/app') {
+        response.end(fs.readFileSync('client/app.js'));
+    } else if(request.url === '/app') {
         response.writeHead(200, {'Content-Type': 'text/html'});
-        response.end(fs.readFileSync('../client/index.html'));
+        response.end(fs.readFileSync('client/index.html'));
+    } else if (request.url === "/style.css") {
+        response.writeHead(200, {'Content-Type': 'text/css'});
+        response.end(fs.readFileSync('client/style.css'));
+    } else if (request.url === "/img/slide_01.jpg") {
+        response.writeHead(200, {'Content-Type': 'image/jpeg'});
+        response.end(fs.readFileSync('client/img/slide_01.jpg'));
+    } else if (request.url === "/img/slide_02.jpg") {
+        response.writeHead(200, {'Content-Type': 'image/jpeg'});
+        response.end(fs.readFileSync('client/img/slide_01.jpg'));
+    } else if (request.url === "/img/logo.png") {
+        response.writeHead(200, {'Content-Type': 'image/png'});
+        response.end(fs.readFileSync('client/img/logo.png'));
+    } else {
+        console.log("Unknown path " + request.url);
+        response.writeHead(404);
+        response.end();
     }
 };
 
@@ -74,6 +90,7 @@ wss.on('connection', function(ws) {
 });
 
 wss.broadcast = function(data) {
+    var sender = (data.id) ? data.id : "unknown_id";
     this.clients.forEach(function(client) {
         if(client.readyState === WebSocket.OPEN) {
             client.send(data);

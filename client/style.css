@@ -1,0 +1,376 @@
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+.container-fluid.themed {
+    padding-top: 15px;
+}
+
+a.nostyle:link {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: auto;
+}
+
+a.nostyle:visited {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: auto;
+}
+
+.title {
+    font-family: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.row-center {
+    text-align: center;
+}
+
+.huge {
+    font-size: 40px;
+}
+
+.font-small {
+    font-size: 0.9em;
+}
+
+.cursor-hand {
+    cursor: pointer;
+}
+
+.col-center {
+    display: inline-block;
+    float: none;
+    text-align: left;
+    margin-right: -4px;
+}
+
+#wrapper {
+    width: 100%;
+}
+
+#page-wrapper {
+    padding: 0 15px;
+    min-height: 568px;
+    background-color: #fff;
+}
+
+@media(min-width:768px) {
+    #page-wrapper {
+        position: inherit;
+        margin: 0 0 0 250px;
+        padding: 0 30px;
+        border-left: 1px solid #e7e7e7;
+    }
+}
+
+.panel-body {
+    padding: 5px;
+}
+
+.sub-device-img {
+    width: 15%;
+    height: 15%;
+    padding-left: 0;
+    padding-top: 0;
+}
+
+.close-lines {
+    line-height: 0.8;
+}
+
+.panel-green {
+    border-color: #5cb85c;
+}
+
+.panel-green .panel-heading {
+    border-color: #5cb85c;
+    color: #fff;
+    background-color: #5cb85c;
+}
+
+.panel-green a {
+    color: #5cb85c;
+}
+
+.panel-green a:hover {
+    color: #3d8b3d;
+}
+
+.panel-red {
+    border-color: #d9534f;
+}
+
+.panel-red .panel-heading {
+    border-color: #d9534f;
+    color: #fff;
+    background-color: #d9534f;
+}
+
+.panel-red a {
+    color: #d9534f;
+}
+
+.panel-red a:hover {
+    color: #b52b27;
+}
+
+.panel-yellow {
+    border-color: #f0ad4e;
+}
+
+.panel-yellow .panel-heading {
+    border-color: #f0ad4e;
+    color: #fff;
+    background-color: #f0ad4e;
+}
+
+.panel-yellow a {
+    color: #f0ad4e;
+}
+
+.panel-yellow a:hover {
+    color: #df8a13;
+}
+
+.list-item {
+    padding: 5px;
+    margin: 10px;
+    height: 75px;
+    overflow: hidden;
+}
+
+.list-item:hover {
+    cursor: pointer;
+    background-color: #D8D8D8;
+}
+
+.arrow {
+    float: right;
+    line-height: 1.42857;
+}
+
+.glyphicon.arrow:before {
+    content: "\e079";
+}
+
+.active > a > .glyphicon.arrow:before {
+    content: "\e114";
+}
+
+.fa.arrow:before {
+    content: "\f104";
+}
+
+.active > a > .fa.arrow:before {
+    content: "\f107";
+}
+
+.plus-times {
+    float: right;
+}
+
+.fa.plus-times:before {
+    content: "\f067";
+}
+
+.active > a > .fa.plus-times {
+    filter: progid: DXImageTransform.Microsoft.BasicImage(rotation=1);
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.plus-minus {
+    float: right;
+}
+
+.fa.plus-minus:before {
+    content: "\f067";
+}
+
+.active > a > .fa.plus-minus:before {
+    content: "\f068";
+}
+
+body.themed {
+    background: -webkit-linear-gradient(#3EB142, rgba(255, 0, 0, 0)) no-repeat fixed center; /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#3EB142, rgba(255, 0, 0, 0)) no-repeat fixed center; /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#3EB142, rgba(255, 0, 0, 0)) no-repeat fixed center; /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#3EB142, rgba(255, 0, 0, 0)) no-repeat fixed center; /* Standard syntax */
+}
+
+a:link.themed {
+    color: #206522;
+}
+
+a:visited.themed {
+    color: #2B7F2E;
+}
+
+a:hover.themed {}
+
+a:active.themed {}
+
+.btn.themed,
+input[type=submit].themed,
+input[type=button].themed,
+input[type=reset].themed {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+    -webkit-transition: 0.5s ease-out color, 0.5s ease-out background-color;
+    -moz-transition: 0.5s ease-out color, 0.5s ease-out background-color;
+    -o-transition: 0.5s ease-out color, 0.5s ease-out background-color;
+    transition: 0.5s ease-out color, 0.5s ease-out background-color;
+}
+
+.btn:hover.themed,
+input[type=submit]:hover.themed,
+input[type=button]:hover.themed,
+input[type=reset]:hover.themed {
+    color: #5cb85c;
+    background-color: #fff;
+    border-color: #4cae4c;
+    outline: 0;
+    outline-style: hidden;
+}
+
+input[type=text]:focus.themed,
+input[type=password]:focus.themed {
+    outline: 0;
+    outline-style: none;
+    border-color: #dff0d8;
+}
+
+.panel.themed {
+    -webkit-transition: 0.5s ease-out color, 0.5s ease-out background-color, 0.5s ease-out border-color;
+    -moz-transition: 0.5s ease-out color, 0.5s ease-out background-color, 0.5s ease-out border-color;
+    -o-transition: 0.5s ease-out color, 0.5s ease-out background-color, 0.5s ease-out border-color;
+    transition: 0.5s ease-out color, 0.5s ease-out background-color, 0.5s ease-out border-color;
+}
+
+.panel.themed:hover {
+    color: #000;
+    background-color: #fff;
+    border-color: #4cae4c;
+    cursor: pointer;
+}
+
+/*
+** Sudara Madushan Fernando
+** CB004928 - MiFone Web Application
+*/
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+}
+
+
+/* The login panel */
+
+.panel {
+    position: absolute;
+    width: 25%;
+    top: 5%;
+    right: 5%;
+    border-radius: 15px;
+}
+
+@media(max-width: 992px) {
+    /* for medium devices like desktop */
+    .panel {
+        width: 50%;
+        right: 2%;
+        top: 2%;
+    }
+}
+
+@media(max-width: 768px) {
+    /* for small devices like tablets */
+    .panel {
+        width: 75%;
+        right: 2%;
+        top: 2%;
+    }
+}
+
+@media(max-width: 480px) {
+    /* for extra small devices like phones */
+    .panel {
+        width: 100%;
+        right: 0;
+        top: 2%;
+    }
+}
+
+.panel-heading {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.input-group {
+    margin-bottom: 5px;
+    width: 100%;
+}
+
+.input-group-addon {
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+    width: 20%;
+}
+
+.form-control {
+    border-color: #d6e9c6;
+    width: 90%;
+}
+
+#login-btn {
+    margin-top: 10px;
+    float: right;
+}
+
+.carousel,
+.item,
+.active {
+    height: 100%;
+}
+
+.carousel-inner {
+    height: 100%;
+}
+
+.fill {
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+    background: linear-gradient(rgba(255, 0, 0, 0), #3EB142);
+}
+
+#slide1 {
+    background: -webkit-linear-gradient(rgba(255, 0, 0, 0), #3EB142) no-repeat fixed center, url(../img/slide_01.jpg);
+    background: -o-linear-gradient(rgba(255, 0, 0, 0), #3EB142) no-repeat fixed center, url(../img/slide_01.jpg);
+    background: -moz-linear-gradient(rgba(255, 0, 0, 0), #3EB142) no-repeat fixed center, url(../img/slide_01.jpg);
+    background: linear-gradient(rgba(255, 0, 0, 0), #3EB142) no-repeat fixed center, url(../img/slide_01.jpg);
+    background-size: 100% 100%;
+}
+
+#slide2 {
+    background: -webkit-linear-gradient(rgba(255, 0, 0, 0), #3EB142) no-repeat fixed center, url(../img/slide_02.jpg);
+    background: -o-linear-gradient(rgba(255, 0, 0, 0), #3EB142) no-repeat fixed center, url(../img/slide_02.jpg);
+    background: -moz-linear-gradient(rgba(255, 0, 0, 0), #3EB142) no-repeat fixed center, url(../img/slide_02.jpg);
+    background: linear-gradient(rgba(255, 0, 0, 0), #3EB142) no-repeat fixed center, url(../img/slide_02.jpg);
+    background-size: 100% 100%;
+}
+
+#logo {
+    width: 50%;
+    height: 20%;
+}
