@@ -14,6 +14,9 @@
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase-auth.js"></script>
 
+
+
+
     <script>
         // Initialize Firebase
         var config = {
@@ -32,11 +35,48 @@
             'login_hint': 'user@example.com'
         });
 
+
+
         firebase.auth().signInWithPopup(provider).then(function (result) {
             // This gives you a Google Access Token. You can use it to access the Google API.
             var token = result.credential.accessToken;
             // The signed-in user info.
             var user = result.user;
+
+            if (user) {
+                // User is signed in.
+                var displayName = user.displayName;
+                var email = user.email;
+                var emailVerified = user.emailVerified;
+                var photoURL = user.photoURL;
+                var uid = user.uid;
+                var providerData = user.providerData;
+                user.getToken().then(function (accessToken) {
+
+                    sessionStorage["session-id"]=user.uid;
+                    sessionStorage["session-name"]=user.displayName;
+
+
+                    // document.getElementById('sign-in-status').textContent = 'Signed in';
+                    // document.getElementById('sign-in').textContent = 'Sign out';
+                    // document.getElementById('account-details').textContent = JSON.stringify({
+                    //     displayName: displayName,
+                    //     email: email,
+                    //     emailVerified: emailVerified,
+                    //     photoURL: photoURL,
+                    //     uid: uid,
+                    //     accessToken: accessToken,
+                    //     providerData: providerData
+                    // }, null, '  ');
+                });
+            } else {
+                // User is signed out.
+                document.getElementById('sign-in-status').textContent = 'Signed out';
+                document.getElementById('sign-in').textContent = 'Sign in';
+                document.getElementById('account-details').textContent = 'null';
+            }
+
+
             // ...
         }).catch(function (error) {
             // Handle Errors here.
@@ -48,15 +88,25 @@
             var credential = error.credential;
             // ...
         });
+
+
+        firebase.auth().signOut().then(function () {
+            // Sign-out successful.
+        }).catch(function (error) {
+            // An error happened.
+        });
     </script>
 
     <!--FirebaseUI -->
     <script src="https://cdn.firebase.com/libs/firebaseui/1.0.1/firebaseui.js"></script>
     <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.1/firebaseui.css" />
-    <script type="text/javascript">
+    <script>
         // FirebaseUI config.
+
+
         var uiConfig = {
-            signInSuccessUrl: '<url-to-redirect-to-on-success>',
+            signInSuccessUrl: '/app',
+
             signInOptions: [
                 // Leave the lines as is for the providers you want to offer your users.
                 firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -80,6 +130,14 @@
 <body>
     <h1>Welcome to My Awesome App</h1>
     <div id="firebaseui-auth-container"></div>
+
+
+    <h1>Welcome to My Awesome App index</h1>
+    <div id="sign-in-status"></div>
+    <div id="sign-in"></div>
+    <div id="account-details"></div>
+
+    <br />
 </body>
 
 </html>

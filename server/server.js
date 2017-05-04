@@ -8,18 +8,21 @@ const WebSocketServer = WebSocket.Server;
 // SSL is required for the WebRTC connections for Chrome. We use a temporary self-signed certificate
 // https://tokbox.com/blog/the-impact-of-googles-new-chrome-security-policy-on-webrtc/
 const serverConfig = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem'),
+    key: fs.readFileSync('./key.pem'),
+    cert: fs.readFileSync('./cert.pem'),
 };
 
 // Create a server for the client html page
 var handleRequest = function(request, response) {
     if(request.url === '/') {
         response.writeHead(200, {'Content-Type': 'text/html'});
-        response.end(fs.readFileSync('client/index.html'));
+        response.end(fs.readFileSync('../client/login.html'));
     } else if(request.url === '/app.js') {
         response.writeHead(200, {'Content-Type': 'application/javascript'});
-        response.end(fs.readFileSync('client/app.js'));
+        response.end(fs.readFileSync('../client/app.js'));
+    }else if(request.url === '/app') {
+        response.writeHead(200, {'Content-Type': 'text/html'});
+        response.end(fs.readFileSync('../client/index.html'));
     }
 };
 
