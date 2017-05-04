@@ -14,7 +14,8 @@ var remoteUserVideoElement;
 var peerConnection;
 var serverConnection;
 
-var id = "TEMP"; //TODO - get it from user
+var id = "TEMP";
+var name = "Name";
 
 var stats;
 
@@ -34,6 +35,9 @@ function pageReady() {
     remoteUserVideoElement = document.getElementById('remoteVideo');
     selfVideoElement = document.getElementById('localVideo');
     
+    id = sessionStorage.getItem("session-id");
+    name = sessionStorage.getItem("session-name");
+
     serverConnection = new WebSocket('wss://' + window.location.hostname + ':' + HTTPS_PORT);
     serverConnection.onmessage = serverOnMessageCallback;
     serverConnection.onopen = function(event) {
@@ -148,6 +152,8 @@ function serverOnMessageCallback(message) {
         }).catch(errorHandler);
     } else if (signal.ice) {
         peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice)).catch(errorHandler);
+    } else if (signal.bitrate) {
+        onRemoteBitrateChange(signal.bitrate);
     }
 }
 
@@ -178,6 +184,7 @@ function onCreateVideoDesc(description) {
     }).catch(errorHandler);
 }
 
+//Callback function called when the local bitrate is changed
 function onLocalBitrateChange(data) {
     console.log("Bitrate change event received - New bitrate " + data.detail);
     serverConnection.send(JSON.stringify({ //inform the remote user
@@ -185,6 +192,10 @@ function onLocalBitrateChange(data) {
         'bitrate': data.detail, 
         'id': id
     }));
+}
+
+function onRemoteBitrateChange(data) {
+
 }
 
 function errorHandler(error) {
@@ -225,7 +236,7 @@ function listenToBandwithStats() {
         }, 2000);
     } else {
         console.log("Using Chrome/WebKit stats API");
-        var t = 0;
+
         stats = getStats(peerConnection, function (result) {
             try {
                 var bandwidth = result.video.bandwidth.googTransmitBitrate;
