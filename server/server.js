@@ -19,27 +19,33 @@ const serverConfig = {
 
 // Create a server for the client html page
 var handleRequest = function(request, response) {
-    if(request.url === '/') {
-        response.writeHead(200, {'Content-Type': 'text/html'});
+    if (request.url === '/') {
+        response.writeHead(200, { 'Content-Type': 'text/html' });
         response.end(fs.readFileSync('client/login.html'));
-    } else if(request.url === '/app.js') {
-        response.writeHead(200, {'Content-Type': 'application/javascript'});
+    } else if (request.url === '/app.js') {
+        response.writeHead(200, { 'Content-Type': 'application/javascript' });
         response.end(fs.readFileSync('client/app.js'));
-    } else if(request.url === '/app') {
-        response.writeHead(200, {'Content-Type': 'text/html'});
+    } else if (request.url === '/app') {
+        response.writeHead(200, { 'Content-Type': 'text/html' });
         response.end(fs.readFileSync('client/index.html'));
     } else if (request.url === "/style.css") {
-        response.writeHead(200, {'Content-Type': 'text/css'});
+        response.writeHead(200, { 'Content-Type': 'text/css' });
         response.end(fs.readFileSync('client/style.css'));
     } else if (request.url === "/img/slide_01.jpg") {
-        response.writeHead(200, {'Content-Type': 'image/jpeg'});
+        response.writeHead(200, { 'Content-Type': 'image/jpeg' });
         response.end(fs.readFileSync('client/img/slide_01.jpg'));
     } else if (request.url === "/img/slide_02.jpg") {
-        response.writeHead(200, {'Content-Type': 'image/jpeg'});
+        response.writeHead(200, { 'Content-Type': 'image/jpeg' });
         response.end(fs.readFileSync('client/img/slide_01.jpg'));
     } else if (request.url === "/img/logo.png") {
-        response.writeHead(200, {'Content-Type': 'image/png'});
+        response.writeHead(200, { 'Content-Type': 'image/png' });
         response.end(fs.readFileSync('client/img/logo.png'));
+    } else if (request.url === "/img/HeaderImg.png") {
+        response.writeHead(200, { 'Content-Type': 'image/jpeg' });
+        response.end(fs.readFileSync('../client/img/HeaderImg.png'));
+    } else if (request.url === "/img/Logo_Clear2.png") {
+        response.writeHead(200, { 'Content-Type': 'image/jpeg' });
+        response.end(fs.readFileSync('../client/img/Logo_Clear2.png'));
     } else {
         console.log("Unknown path " + request.url);
         response.writeHead(404);
@@ -61,25 +67,25 @@ wss.on('connection', function(ws) {
         var msg = JSON.parse(message);
         switch (msg.type) {
             case TYPE_INITIAL_HANDSHAKE:
-            //clients[msg.id] = ws;
-            console.log("New handshake from " + msg.id + " at " + msg.date);
-            break;
+                //clients[msg.id] = ws;
+                console.log("New handshake from " + msg.id + " at " + msg.date);
+                break;
 
             case TYPE_SDP_CONNECTION:
-            wss.broadcast(message); //todo - sent to the correct client 
-            break;
+                wss.broadcast(message); //todo - sent to the correct client 
+                break;
 
             case TYPE_ICE_INFO:
-            wss.broadcast(message);
-            break;
+                wss.broadcast(message);
+                break;
 
             case TYPE_BITRATE_CHANGED_INFO:
-            wss.broadcast(message);
-            break;
+                wss.broadcast(message);
+                break;
 
             case TYPE_CHAT_MESSAGE:
-            wss.broadcast(message);
-            break;
+                wss.broadcast(message);
+                break;
         }
     });
 
@@ -92,7 +98,7 @@ wss.on('connection', function(ws) {
 wss.broadcast = function(data) {
     var sender = (data.id) ? data.id : "unknown_id";
     this.clients.forEach(function(client) {
-        if(client.readyState === WebSocket.OPEN) {
+        if (client.readyState === WebSocket.OPEN) {
             client.send(data);
         }
     });
@@ -102,9 +108,9 @@ function onIncomingMessage(message) {
     var msg = JSON.parse(message);
     switch (msg.type) {
         case TYPE_INITIAL_HANDSHAKE:
-        //clients[] = 
-        console.log("New handshake from " + msg.id + " at " + msg.date);
-        break;
+            //clients[] = 
+            console.log("New handshake from " + msg.id + " at " + msg.date);
+            break;
     }
 }
 

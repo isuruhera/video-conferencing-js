@@ -1,16 +1,126 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script src="app.js"></script>
-    </head>
 
-    <body>
-        <video id="localVideo" autoplay muted style="width:40%;"></video>
+<head>
+    <script src="app.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <style>
+        .rcorners2 {
+            border-radius: 25px;
+            border: 1px solid #0d98da;
+            padding: 20px;
+            width: 400px;
+            height: 400px;
+            margin: 20px;
+        }
+
+        .rcorners3 {
+            border-radius: 25px;
+            /*border: 2px solid #0d98da;*/
+            padding: 20px;
+            width: 600px;
+            height: 200px;
+            margin: 20px;
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+    <table style="width: 100%;">
+        <tr>
+            <td colspan="4" style="background:url('./img/HeaderImg.png') no-repeat left top;height: 80px; background-size:cover;" valign="middle">
+
+                <table style="width: 100%;">
+                    <tr>
+                        <td rowspan="2" align="center" style="width: 100px;"><img src="./img/Logo_Clear2.png" width="90px" /></td>
+                        <td style="color: white;font-size: 18px; vertical-align: bottom; width: 250px">VideoConf</td>
+                        <td rowspan="2">
+                            <div id="disName" style="float: right; color: white;font-size: 18px; margin-right: 20px;">kkkj
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="color: white; font-size: 13px; vertical-align: top;width: 250px;">Video Chat. Made Easy
+                        </td>
+                    </tr>
+                    <!--<tr>
+                        <td>
+                            <div id="disName" style="float: right; color: white;font-size: 18px;">kkkj
+                            </div>
+                        </td>
+
+                    </tr>-->
+                </table>
+
+
+
+            </td>
+
+        </tr>
+        <tr style="align-content: center;">
+            <td style="width:20%;">
+            </td>
+            <td style="width:30%;" align="center">
+                <div class="rcorners2 ">
+                    <video id="localVideo " autoplay muted style="width:400px; "></video>
+                </div>
+
+            </td>
+            <td style="width:30%;" align="center">
+                <div class="rcorners2 ">
+                    <video id="remoteVideo " autoplay style="width:400px; "></video>
+                </div>
+
+            </td>
+            <td style="width:20%; ">
+
+            </td>
+        </tr>
+        <tr>
+            <td style="width:20%; ">
+            </td>
+            <td style="width:30%; " align="center ">
+                <input type="button" id="start" class="btn btn-primary" onclick="start(true)" value="Start Video"></input>
+            </td>
+            <td style="width:30%; " align="center ">
+                <button type="button " class="btn btn-primary ">End</button>
+            </td>
+            <td style="width:20%; ">
+            </td>
+        </tr>
+
+        <tr>
+            <td align="center" colspan="4">
+                <div class="rcorners3 ">
+                    <textarea class="form-control" rows="5" id="chatHistory" readonly></textarea><br>
+
+                    <input type="text" class="form-control" id="usr">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" colspan="4">
+                <span class="label label-primary">Send</span><br>
+
+            </td>
+        </tr </table>
+
+
+
+
+
+        <!--<video id="localVideo" autoplay muted style="width:40%;"></video>
         <video id="remoteVideo" autoplay style="width:40%;"></video>
 
-        <br />
+        <br />-->
 
-        <input type="button" id="start" onclick="start(true)" value="Start Video"></input>
+        
 
         <input id="chat" autocomplete="off" /><button onclick="onSendChatMessage();">Send</button>
         
@@ -18,5 +128,6 @@
         <script type="text/javascript">
             pageReady();
         </script>
-    </body>
+</body>
+
 </html>
