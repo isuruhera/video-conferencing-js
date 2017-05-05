@@ -5,6 +5,7 @@ const TYPE_SDP_CONNECTION = 1;
 const TYPE_ICE_INFO = 2;
 const TYPE_BITRATE_CHANGED_INFO = 3;
 const TYPE_CHAT_MESSAGE = 4;
+const TYPE_REQUEST_OFFER = 5;
 
 const fs = require('fs');
 const https = require('https');
@@ -84,6 +85,10 @@ wss.on('connection', function(ws) {
                 break;
 
             case TYPE_CHAT_MESSAGE:
+                wss.broadcast(message);
+                break;
+
+            case TYPE_REQUEST_OFFER:
                 wss.broadcast(message);
                 break;
         }

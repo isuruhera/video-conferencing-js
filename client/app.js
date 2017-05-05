@@ -5,6 +5,7 @@ const TYPE_SDP_CONNECTION = 1;
 const TYPE_ICE_INFO = 2;
 const TYPE_BITRATE_CHANGED_INFO = 3;
 const TYPE_CHAT_MESSAGE = 4;
+const TYPE_REQUEST_OFFER = 5;
 
 const CHANGE_LOCAL_BITRATE_EVENT_NAME = "video-conf-local-bitrate-change";
 const CHANGE_REMOTE_BITRATE_EVENT_NAME = "video-conf-remote-bitrate-change";
@@ -26,6 +27,8 @@ var bitrateManualOverride = true;
 
 var currentSenders = [];
 var currentStream;
+
+var isCaller = false;
 
 //ICE servers are required for webRTC to function specially if the users 
 //are behind NAT or a firewall
@@ -134,6 +137,8 @@ function getOptimalVideoParams() {
 }
 
 function start(isCaller) {
+    this.isCaller = isCaller;
+
     peerConnection = new RTCPeerConnection(peerConfiguration);
     peerConnection.onaddstream = peerOnAddStreamCallback;
     peerConnection.onicecandidate = peerOnIceCandidateCallback;
@@ -250,6 +255,15 @@ function initVideoStream(addToConnection) {
                 } else if (previousStream) {
                     peerConnection.removeStream(previousStream);
                     peerConnection.addStream(currentStream);
+                }
+
+                if (isCaller) { //create offer ourselves
+                    peerConnection.createOffer().then(onCreateVideoDesc).catch(errorHandler);
+                } else { //request offer from other party
+                    serverConnection.send(JSON.stringify({
+                        'type': TYPE_REQUEST_OFFER,
+                        'id': id
+                    }));
                 }
             }
         }).catch(errorHandler);
