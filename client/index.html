@@ -34,11 +34,11 @@
 
     <table style="width: 100%;">
         <tr>
-            <td colspan="4" style="background:url('./HeaderImg.png') no-repeat left top;height: 80px; background-size:cover;" valign="middle">
+            <td colspan="4" style="background:url('./img/HeaderImg.png') no-repeat left top;height: 80px; background-size:cover;" valign="middle">
 
                 <table style="width: 100%;">
                     <tr>
-                        <td rowspan="2" align="center" style="width: 100px;"><img src="./Logo_Clear2.png" width="90px" /></td>
+                        <td rowspan="2" align="center" style="width: 100px;"><img src="./img/Logo_Clear2.png" width="90px" /></td>
                         <td style="color: white;font-size: 18px; vertical-align: bottom; width: 250px">VideoConf</td>
                         <td rowspan="2">
                             <div id="disName" style="float: right; color: white;font-size: 18px; margin-right: 20px;">kkkj
@@ -86,7 +86,7 @@
             <td style="width:20%; ">
             </td>
             <td style="width:30%; " align="center ">
-                <button type="button " class="btn btn-primary">Start</button>
+                <input type="button" id="start" class="btn btn-primary" onclick="start(true)" value="Start Video"></input>
             </td>
             <td style="width:30%; " align="center ">
                 <button type="button " class="btn btn-primary ">End</button>
@@ -120,7 +120,7 @@
 
         <br />-->
 
-        <input type="button" id="start" onclick="start(true)" value="Start Video"></input>
+        
 
         <script src="https://cdn.webrtc-experiment.com/getStats.js"></script>
         <script type="text/javascript">

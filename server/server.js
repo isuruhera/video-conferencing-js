@@ -26,7 +26,13 @@ var handleRequest = function(request, response) {
     }else if(request.url === '/app') {
         response.writeHead(200, {'Content-Type': 'text/html'});
         response.end(fs.readFileSync('../client/index.html'));
-    }
+    }else if (request.url === "/img/HeaderImg.png") {
+        response.writeHead(200, {'Content-Type': 'image/jpeg'});
+        response.end(fs.readFileSync('../client/img/HeaderImg.png'));
+    } else if (request.url === "/img/Logo_Clear2.png") {
+        response.writeHead(200, {'Content-Type': 'image/jpeg'});
+        response.end(fs.readFileSync('../client/img/Logo_Clear2.png'));
+    } 
 };
 
 var httpsServer = https.createServer(serverConfig, handleRequest);
