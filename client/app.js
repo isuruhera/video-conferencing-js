@@ -276,6 +276,16 @@ function onSendChatMessage() {
     }));
 }
 
+function onManualBandwidthSet(val) {
+    if (val == -1) {
+        bitrateManualOverride = false;
+    } else {
+        bitrateManualOverride = true;
+        currentBitrate = val;
+        initVideoStream(true);
+    }
+}
+
 function errorHandler(error) {
     console.log(error);
 }
