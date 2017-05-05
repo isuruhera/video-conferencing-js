@@ -151,7 +151,7 @@ a.nostyle:visited {
     content: "\e079";
 }
 
-.active > a > .glyphicon.arrow:before {
+.active>a>.glyphicon.arrow:before {
     content: "\e114";
 }
 
@@ -159,7 +159,7 @@ a.nostyle:visited {
     content: "\f104";
 }
 
-.active > a > .fa.arrow:before {
+.active>a>.fa.arrow:before {
     content: "\f107";
 }
 
@@ -171,7 +171,7 @@ a.nostyle:visited {
     content: "\f067";
 }
 
-.active > a > .fa.plus-times {
+.active>a>.fa.plus-times {
     filter: progid: DXImageTransform.Microsoft.BasicImage(rotation=1);
     -webkit-transform: rotate(45deg);
     -moz-transform: rotate(45deg);
@@ -188,15 +188,19 @@ a.nostyle:visited {
     content: "\f067";
 }
 
-.active > a > .fa.plus-minus:before {
+.active>a>.fa.plus-minus:before {
     content: "\f068";
 }
 
 body.themed {
-    background: -webkit-linear-gradient(#3EB142, rgba(255, 0, 0, 0)) no-repeat fixed center; /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(#3EB142, rgba(255, 0, 0, 0)) no-repeat fixed center; /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(#3EB142, rgba(255, 0, 0, 0)) no-repeat fixed center; /* For Firefox 3.6 to 15 */
-    background: linear-gradient(#3EB142, rgba(255, 0, 0, 0)) no-repeat fixed center; /* Standard syntax */
+    background: -webkit-linear-gradient(#3EB142, rgba(255, 0, 0, 0)) no-repeat fixed center;
+    /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#3EB142, rgba(255, 0, 0, 0)) no-repeat fixed center;
+    /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#3EB142, rgba(255, 0, 0, 0)) no-repeat fixed center;
+    /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#3EB142, rgba(255, 0, 0, 0)) no-repeat fixed center;
+    /* Standard syntax */
 }
 
 a:link.themed {
@@ -255,6 +259,7 @@ input[type=password]:focus.themed {
     border-color: #4cae4c;
     cursor: pointer;
 }
+
 
 /*
 ** Sudara Madushan Fernando
@@ -373,4 +378,31 @@ body {
 #logo {
     width: 50%;
     height: 20%;
+}
+
+.rcorners2 {
+    border-radius: 25px;
+    border: 1px solid #0d98da;
+    padding: 20px;
+    width: 400px;
+    height: 400px;
+    margin: 20px;
+}
+
+.rcorners3 {
+    border-radius: 25px;
+    /*border: 2px solid #0d98da;*/
+    padding: 20px;
+    width: 600px;
+    height: 200px;
+    margin: 20px;
+}
+
+.rcorners4 {
+    border-radius: 25px;
+    border: 1px solid #0d98da;
+    padding: 20px;
+    width: 150px;
+    height: 220px;
+    margin: 20px;
 }

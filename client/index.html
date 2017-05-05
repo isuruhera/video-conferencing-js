@@ -3,46 +3,23 @@
 
 <head>
     <script src="app.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- jQuery and Bootstrap JS files -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase-auth.js"></script>
 
+    <!-- CSS - Bootstrap 3.3.7 -->
+    <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-    <style>
-        .rcorners2 {
-            border-radius: 25px;
-            border: 1px solid #0d98da;
-            padding: 20px;
-            width: 400px;
-            height: 400px;
-            margin: 20px;
-        }
-        
-        .rcorners3 {
-            border-radius: 25px;
-            /*border: 2px solid #0d98da;*/
-            padding: 20px;
-            width: 600px;
-            height: 200px;
-            margin: 20px;
-        }
-        
-        .rcorners4 {
-            border-radius: 25px;
-            border: 1px solid #0d98da;
-            padding: 20px;
-            width: 150px;
-            height: 220px;
-            margin: 20px;
-        }
-    </style>
+    <!-- CSS - Custom styling -->
+    <link type="text/css" rel="stylesheet" href="style.css">
+
     <script>
         // Initialize Firebase
-        // TODO: Replace with your project's customized code snippet
         var config = {
             apiKey: "AIzaSyD9_jmiGv51xB9SQSZwv31isZNI3Eb8Aq4",
             authDomain: "webrtc750.firebaseapp.com",
@@ -54,21 +31,19 @@
         firebase.initializeApp(config);
 
         firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                // User is signed in.
+            if (user) { // User is signed in.
                 document.getElementById('disName').innerHTML = firebase.auth().currentUser.displayName;
             } else {
                 // No user is signed in.
                 window.location.replace("/");
-
             }
         });
 
         function logout() {
             firebase.auth().signOut().then(function() {
-                // Sign-out successful.
+                console.log("User signed out");
             }).catch(function(error) {
-                // An error happened.
+                console.log("Unable to sign out - error " + error);
             });
         }
     </script>
@@ -88,8 +63,6 @@
                         <td rowspan="2">
 
                             <button id="signOut" type="button" onclick="logout();" class="btn btn-default" style="color: #fff; background-color: transparent;float: right; margin-right: 15px;">Sign out</button>
-                            <!--<div id="signOut" style="color: white;font-size: 18px; float: right;">Sign out
-                            </div>-->
                             <div id="disName" style="float: right; color: white;font-size: 18px; margin-right: 20px;margin-top: 5px;">
                             </div>
                         </td>
@@ -98,17 +71,7 @@
                         <td style="color: white; font-size: 13px; vertical-align: top;width: 250px;">Video Chat. Made Easy
                         </td>
                     </tr>
-                    <!--<tr>
-                        <td>
-                            <div id="disName" style="float: right; color: white;font-size: 18px;">kkkj
-                            </div>
-                        </td>
-
-                    </tr>-->
                 </table>
-
-
-
             </td>
 
         </tr>
@@ -146,10 +109,10 @@
             <td style="width:20%; ">
             </td>
             <td style="width:30%; " align="center ">
-                <input type="button" id="start" class="btn btn-primary" onclick="start(true)" value="Start Video"></input>
+                <input type="button" id="start" class="btn btn-primary themed" onclick="start(true)" value="Start Video"></input>
             </td>
             <td style="width:30%; " align="center ">
-                <button type="button " class="btn btn-primary ">End</button>
+                <button type="button " class="btn btn-primary themed">End</button>
             </td>
             <td style="width:20%; ">
             </td>
@@ -166,21 +129,17 @@
         </tr>
         <tr>
             <td align="center" colspan="4">
-                <!--<span class="label label-primary">Send</span><br>-->
-                <button class="btn btn-primary" onclick="onSendChatMessage();">Send</button>
+                <button class="btn btn-primary themed" onclick="onSendChatMessage();">Send</button>
             </td>
         </tr>
     </table>
     <br />
 
-    <!--<input type="button" id="start" onclick="start(true)" value="Start Video"></input>
-
-        <input id="chat" autocomplete="off" />-->
-
     <script src="https://cdn.webrtc-experiment.com/getStats.js"></script>
     <script type="text/javascript">
         pageReady();
     </script>
+
 </body>
 
 </html>
