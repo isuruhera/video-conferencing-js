@@ -8,7 +8,7 @@
     <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
 
 
-
+    <!--Firebase JS-->
 
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase-app.js"></script>
@@ -53,8 +53,8 @@
                 var providerData = user.providerData;
                 user.getToken().then(function (accessToken) {
 
-                    sessionStorage["session-id"]=user.uid;
-                    sessionStorage["session-name"]=user.displayName;
+                    sessionStorage["session-id"] = user.uid;
+                    sessionStorage["session-name"] = user.displayName;
 
 
                     // document.getElementById('sign-in-status').textContent = 'Signed in';

@@ -7,6 +7,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase-auth.js"></script>
+
+
     <style>
         .rcorners2 {
             border-radius: 25px;
@@ -26,6 +31,38 @@
             margin: 20px;
         }
     </style>
+    <script>
+        // Initialize Firebase
+        // TODO: Replace with your project's customized code snippet
+        var config = {
+            apiKey: "AIzaSyD9_jmiGv51xB9SQSZwv31isZNI3Eb8Aq4",
+            authDomain: "webrtc750.firebaseapp.com",
+            databaseURL: "https://webrtc750.firebaseio.com",
+            projectId: "webrtc750",
+            storageBucket: "webrtc750.appspot.com",
+            messagingSenderId: "371568173906"
+        };
+        firebase.initializeApp(config);
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                // User is signed in.
+                document.getElementById('disName').innerHTML = firebase.auth().currentUser.displayName;
+            } else {
+                // No user is signed in.
+                window.location.replace("/");
+
+            }
+        });
+
+        function logout() {
+            firebase.auth().signOut().then(function () {
+                // Sign-out successful.
+            }).catch(function (error) {
+                // An error happened.
+            });
+        }
+    </script>
 
 
 </head>
@@ -41,7 +78,11 @@
                         <td rowspan="2" align="center" style="width: 100px;"><img src="./img/Logo_Clear2.png" width="90px" /></td>
                         <td style="color: white;font-size: 18px; vertical-align: bottom; width: 250px">VideoConf</td>
                         <td rowspan="2">
-                            <div id="disName" style="float: right; color: white;font-size: 18px; margin-right: 20px;">kkkj
+
+                            <button id="signOut" type="button" onclick="logout();" class="btn btn-default" style="color: #fff; background-color: transparent;float: right; margin-right: 15px;">Sign out</button>
+                            <!--<div id="signOut" style="color: white;font-size: 18px; float: right;">Sign out
+                            </div>-->
+                            <div id="disName" style="float: right; color: white;font-size: 18px; margin-right: 20px;margin-top: 5px;">
                             </div>
                         </td>
                     </tr>
@@ -120,7 +161,7 @@
 
         <br />-->
 
-        
+
 
         <script src="https://cdn.webrtc-experiment.com/getStats.js"></script>
         <script type="text/javascript">
