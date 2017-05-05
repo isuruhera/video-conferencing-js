@@ -20,7 +20,7 @@ var name = "Name";
 
 var stats;
 
-var currentBitrate = 0.2;
+var currentBitrate = 1;
 var currentBitrateChangeTolerance = 0;
 var bitrateManualOverride = true;
 

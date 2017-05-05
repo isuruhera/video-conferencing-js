@@ -42,10 +42,10 @@ var handleRequest = function(request, response) {
         response.end(fs.readFileSync('client/img/logo.png'));
     } else if (request.url === "/img/HeaderImg.png") {
         response.writeHead(200, { 'Content-Type': 'image/jpeg' });
-        response.end(fs.readFileSync('../client/img/HeaderImg.png'));
+        response.end(fs.readFileSync('client/img/HeaderImg.png'));
     } else if (request.url === "/img/Logo_Clear2.png") {
         response.writeHead(200, { 'Content-Type': 'image/jpeg' });
-        response.end(fs.readFileSync('../client/img/Logo_Clear2.png'));
+        response.end(fs.readFileSync('client/img/Logo_Clear2.png'));
     } else {
         console.log("Unknown path " + request.url);
         response.writeHead(404);
