@@ -48,8 +48,8 @@
 
             if (user) { // User is signed in.
                 user.getToken().then(function(accessToken) {
-                    sessionStorage["session-id"] = user.uid;
-                    sessionStorage["session-name"] = user.displayName;
+                    sessionStorage.setItem("session-id", user.uid);
+                    sessionStorage.setItem("session-name", user.displayName);
                     sessionStorage["session-photo-url"] = user.photoURL;
                 });
             } else {

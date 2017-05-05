@@ -20,24 +20,29 @@ var name = "Name";
 
 var stats;
 
-var currentBitrate = 1;
+var currentBitrate = 0.2;
 var currentBitrateChangeTolerance = 0;
+var bitrateManualOverride = true;
+
+var currentSenders = [];
+var currentStream;
 
 //ICE servers are required for webRTC to function specially if the users 
 //are behind NAT or a firewall
 const peerConfiguration = {
     'iceServers': [
-        {'urls': 'stun:stun.l.google.com:19302'},
-        {'urls': 'stun:stun.services.mozilla.com'},
+        { 'urls': 'stun:stun.l.google.com:19302' },
+        { 'urls': 'stun:stun.services.mozilla.com' },
     ]
 };
 
 function pageReady() {
     remoteUserVideoElement = document.getElementById('remoteVideo');
     selfVideoElement = document.getElementById('localVideo');
-    
+
     id = sessionStorage.getItem("session-id");
     name = sessionStorage.getItem("session-name");
+    console.log("Got id " + id + " and name " + name);
 
     serverConnection = new WebSocket('wss://' + window.location.hostname + ':' + HTTPS_PORT);
     serverConnection.onmessage = serverOnMessageCallback;
@@ -52,21 +57,15 @@ function pageReady() {
         serverConnection.send(JSON.stringify(msg));
     };
 
-    if (navigator.mediaDevices.getUserMedia) {
-        var promise = navigator.mediaDevices.getUserMedia(getOptimalVideoParams());
-        promise.then(function(stream) {
-            localStream = stream;
-            selfVideoElement.src = window.URL.createObjectURL(stream); //start showing the video on page ready
-        }).catch(errorHandler);
-
+    if (initVideoStream(false)) { //browser supports WebRTC
         document.addEventListener(CHANGE_LOCAL_BITRATE_EVENT_NAME, onLocalBitrateChange);
     } else {
+        serverConnection.close();
         alert('Sorry, your browser does not support WebRTC');
     }
 }
 
 function getOptimalVideoParams() {
-    //TODO - Detect the bandwith and customize video params
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
     var idealFramerate = 24;
     var maximumFrameRate = 25;
@@ -79,15 +78,29 @@ function getOptimalVideoParams() {
 
     if (currentBitrate < 0.01) { //lowest quality
         isVideoEnabled = false;
-        isAudioEnabled = false;
+        isAudioEnabled = true;
     } else if (currentBitrate < 0.1) {
         isVideoEnabled = false;
     } else if (currentBitrate < 0.5) {
-
+        idealResolution = [256, 144];
+        maxResolution = [320, 240];
+        idealFramerate = 5;
+        maximumFrameRate = 10;
     } else if (currentBitrate < 1) {
-
+        idealResolution = [640, 480];
+        maxResolution = [720, 576];
+        idealFramerate = 15;
+        maximumFrameRate = 20;
+    } else if (currentBitrate < 1.5) {
+        idealResolution = [1280, 720];
+        maxResolution = [1920, 1080];
+        idealFramerate = 24;
+        maximumFrameRate = 25;
     } else if (currentBitrate < 2) { //2mbps - can provide a good quality
-
+        idealResolution = [1920, 1080];
+        maxResolution = [2560, 1440];
+        idealFramerate = 25;
+        maximumFrameRate = 60;
     }
 
     var mediaParams = {}
@@ -114,9 +127,7 @@ function getOptimalVideoParams() {
     if (!isAudioEnabled) {
         mediaParams.audio = false;
     } else {
-        mediaParams.audio = {
-
-        }
+        mediaParams.audio = true;
     }
 
     return mediaParams;
@@ -127,7 +138,13 @@ function start(isCaller) {
     peerConnection.onaddstream = peerOnAddStreamCallback;
     peerConnection.onicecandidate = peerOnIceCandidateCallback;
 
-    peerConnection.addStream(localStream);
+    if (navigator.mozGetUserMedia) { //Firefox and Chrome uses different API
+        currentStream.getTracks().forEach(function(track) {
+            currentSenders.push(peerConnection.addTrack(track, currentStream));
+        });
+    } else {
+        peerConnection.addStream(currentStream);
+    }
 
     if (isCaller) {
         peerConnection.createOffer().then(onCreateVideoDesc).catch(errorHandler);
@@ -143,12 +160,12 @@ function serverOnMessageCallback(message) {
 
     // Ignore messages from ourself
     if (signal.id == id) {
-        //return;
+        return;
     }
 
     if (signal.sdp) {
         peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(function() {
-            if(signal.sdp.type == 'offer') { // Only create answers in response to offers
+            if (signal.sdp.type == 'offer') { // Only create answers in response to offers
                 peerConnection.createAnswer().then(onCreateVideoDesc).catch(errorHandler);
             }
         }).catch(errorHandler);
@@ -162,10 +179,10 @@ function serverOnMessageCallback(message) {
 }
 
 function peerOnIceCandidateCallback(event) {
-    if(event.candidate != null) {
+    if (event.candidate != null) {
         serverConnection.send(JSON.stringify({
             'type': TYPE_ICE_INFO,
-            'ice': event.candidate, 
+            'ice': event.candidate,
             'id': id
         }));
     }
@@ -182,7 +199,7 @@ function onCreateVideoDesc(description) {
     peerConnection.setLocalDescription(description).then(function() {
         serverConnection.send(JSON.stringify({
             'type': TYPE_SDP_CONNECTION,
-            'sdp': peerConnection.localDescription, 
+            'sdp': peerConnection.localDescription,
             'id': id
         }));
     }).catch(errorHandler);
@@ -190,16 +207,56 @@ function onCreateVideoDesc(description) {
 
 //Callback function called when the local bitrate is changed
 function onLocalBitrateChange(data) {
-    console.log("Bitrate change event received - New bitrate " + data.detail);
+    console.log("Local Bitrate change event received - New bitrate " + data.detail);
     serverConnection.send(JSON.stringify({ //inform the remote user
         'type': TYPE_BITRATE_CHANGED_INFO,
-        'bitrate': data.detail, 
+        'bitrate': data.detail,
         'id': id
     }));
+
+    initVideoStream(true);
 }
 
+//Callback function called when the remote bitrate is changed
 function onRemoteBitrateChange(data) {
+    var difference = Math.abs(data - currentBitrate);
+    if (difference > 0.2) {
+        console.log("Changing bitrate due to remote bitrate change event");
+        initVideoStream(true);
+    } else {
+        console.log("Remote bitrate event discarded due to low difference of " + difference);
+    }
+}
 
+//Initialize the video stream
+function initVideoStream(addToConnection) {
+    var previousStream = currentStream;
+    if (navigator.mediaDevices.getUserMedia) { //check if browser supports webrtc
+        var promise = navigator.mediaDevices.getUserMedia(getOptimalVideoParams());
+        promise.then(function(stream) {
+            currentStream = stream;
+            selfVideoElement.src = window.URL.createObjectURL(stream); //start showing the video
+
+            if (addToConnection) {
+                if (navigator.mozGetUserMedia && currentSenders.length > 0) {
+                    currentSenders.forEach(function(sender) {
+                        peerConnection.removeTrack(sender);
+                    });
+                    currentSenders = [];
+
+                    stream.getTracks().forEach(function(track) {
+                        currentSenders.push(peerConnection.addTrack(track, stream));
+                    });
+                } else if (previousStream) {
+                    peerConnection.removeStream(previousStream);
+                    peerConnection.addStream(currentStream);
+                }
+            }
+        }).catch(errorHandler);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 //Called when the remote party send a chat message
@@ -213,7 +270,7 @@ function onSendChatMessage() {
     var message = textBox.value;
     serverConnection.send(JSON.stringify({
         'type': TYPE_CHAT_MESSAGE,
-        'chat': message, 
+        'chat': message,
         'id': id,
         "name": name
     }));
@@ -225,49 +282,26 @@ function errorHandler(error) {
 
 //Listen to bandwidth stats from the streams
 function listenToBandwithStats() {
-    if (navigator.mozGetUserMedia) { 
+    if (navigator.mozGetUserMedia) {
         console.log("Using Firefox stats API");
 
         setInterval(function() {
-            var selector = getStreamToListenOn();
-            peerConnection.getStats(selector).then(function(report) {
-                console.log("Stats report received");
+            if (!bitrateManualOverride) {
+                var selector = getStreamToListenOn();
+                peerConnection.getStats(selector).then(function(report) {
+                    console.log("Stats report received");
 
-                var selectedReportType;
-                report.forEach(function(element) {
-                    if (element.type == "inbound-rtp" || element.type == "inboundrtp") {
-                        selectedReportType = element;
-                    }
-                });
-                
-                var bitrate = (selectedReportType.bitrateMean/1000000).toFixed(2); //convert to mbps
-                if (shouldTransmitBitrateEvent(bitrate)) {
-                    var event = new CustomEvent(CHANGE_LOCAL_BITRATE_EVENT_NAME, {
-                            "detail": bitrate  
-                        })
+                    var selectedReportType;
+                    report.forEach(function(element) {
+                        if (element.type == "inbound-rtp" || element.type == "inboundrtp") {
+                            selectedReportType = element;
+                        }
+                    });
 
-                    document.dispatchEvent(event); //transmit the event
-                    console.log("Bitrate change event transmitted - Bitrate " + bitrate + " Mbps");
-                } else {
-                    console.log("New bitrate " + bitrate + " not transmitted | Previous bitrate " + currentBitrate);
-                }
-
-                currentBitrate = bitrate;
-            }).catch(errorHandler);
-        }, 2000);
-    } else {
-        console.log("Using Chrome/WebKit stats API");
-
-        stats = getStats(peerConnection, function (result) {
-            try {
-                var bandwidth = result.video.bandwidth.googTransmitBitrate;
-                if (bandwidth) {
-                    bandwidth = parseInt(bandwidth);
-                    var bitrate = (bandwidth/1000000).toFixed(2); //convert to mbps
-
+                    var bitrate = (selectedReportType.bitrateMean / 1000000).toFixed(2); //convert to mbps
                     if (shouldTransmitBitrateEvent(bitrate)) {
                         var event = new CustomEvent(CHANGE_LOCAL_BITRATE_EVENT_NAME, {
-                            "detail": bitrate  
+                            "detail": bitrate
                         })
 
                         document.dispatchEvent(event); //transmit the event
@@ -277,11 +311,38 @@ function listenToBandwithStats() {
                     }
 
                     currentBitrate = bitrate;
-                }
-            } catch (err) {
-                console.log("Bandwidth calculation failed");
+                }).catch(errorHandler);
             }
         }, 2000);
+    } else {
+        console.log("Using Chrome/WebKit stats API");
+
+        if (!bitrateManualOverride) {
+            stats = getStats(peerConnection, function(result) {
+                try {
+                    var bandwidth = result.video.bandwidth.googTransmitBitrate;
+                    if (bandwidth) {
+                        bandwidth = parseInt(bandwidth);
+                        var bitrate = (bandwidth / 1000000).toFixed(2); //convert to mbps
+
+                        if (shouldTransmitBitrateEvent(bitrate)) {
+                            var event = new CustomEvent(CHANGE_LOCAL_BITRATE_EVENT_NAME, {
+                                "detail": bitrate
+                            })
+
+                            document.dispatchEvent(event); //transmit the event
+                            console.log("Bitrate change event transmitted - Bitrate " + bitrate + " Mbps");
+                        } else {
+                            console.log("New bitrate " + bitrate + " not transmitted | Previous bitrate " + currentBitrate);
+                        }
+
+                        currentBitrate = bitrate;
+                    }
+                } catch (err) {
+                    console.log("Bandwidth calculation failed");
+                }
+            }, 2000);
+        }
     }
 }
 
