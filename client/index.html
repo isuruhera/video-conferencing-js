@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-    <head>
+
+<head>
     <script src="app.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -66,8 +67,8 @@
 
 </head>
 
-    <body>
-        <table style="width: 100%;">
+<body>
+    <table style="width: 100%;">
         <tr>
             <td colspan="4" style="background:url('./img/HeaderImg.png') no-repeat left top;height: 80px; background-size:cover;" valign="middle">
 
@@ -137,28 +138,29 @@
         <tr>
             <td align="center" colspan="4">
                 <div style="width:50%; margin: 30px;"> <textarea class="form-control" rows="5" id="comment"></textarea>
-                <br>
+                    <br>
 
-                    <input type="text" class="form-control" id="chat" autocomplete="off" >
+                    <input type="text" class="form-control" id="chat" autocomplete="off">
                 </div>
             </td>
         </tr>
         <tr>
             <td align="center" colspan="4">
                 <!--<span class="label label-primary">Send</span><br>-->
-<button class="btn btn-primary" onclick="onSendChatMessage();">Send</button>
+                <button class="btn btn-primary" onclick="onSendChatMessage();">Send</button>
             </td>
         </tr>
-        </table>
-        <br />
+    </table>
+    <br />
 
-        <!--<input type="button" id="start" onclick="start(true)" value="Start Video"></input>
+    <!--<input type="button" id="start" onclick="start(true)" value="Start Video"></input>
 
         <input id="chat" autocomplete="off" />-->
-        
-        <script src="https://cdn.webrtc-experiment.com/getStats.js"></script>
-        <script type="text/javascript">
-            pageReady();
-        </script>
-    </body>
+
+    <script src="https://cdn.webrtc-experiment.com/getStats.js"></script>
+    <script type="text/javascript">
+        pageReady();
+    </script>
+</body>
+
 </html>
