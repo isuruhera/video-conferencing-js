@@ -30,13 +30,13 @@
             height: 200px;
             margin: 20px;
         }
-
-         .rcorners4 {
+        
+        .rcorners4 {
             border-radius: 25px;
             border: 1px solid #0d98da;
             padding: 20px;
             width: 150px;
-            height: 200px;
+            height: 220px;
             margin: 20px;
         }
     </style>
@@ -117,27 +117,28 @@
             </td>
             <td style="width:30%;" align="center">
                 <div class="rcorners2 ">
-                    <video id="localVideo " autoplay muted style="width:400px; "></video>
+                    <video id="localVideo" autoplay muted style="width:400px; "></video>
                 </div>
 
             </td>
             <td style="width:30%;" align="center">
                 <div class="rcorners2 ">
-                    <video id="remoteVideo " autoplay style="width:400px; "></video>
+                    <video id="remoteVideo" autoplay style="width:400px; "></video>
                 </div>
 
             </td>
             <td style="width:20%; ">
-<div class="rcorners4 ">
-<input type="radio" name="bandwidth" value="50kbs"> GPRS<br>
-  <input type="radio" name="bandwidth" value="250kbs"> Regular 2G<br>
-  <input type="radio" name="bandwidth" value="450kbs"> Good 2G<br>
-  <input type="radio" name="bandwidth" value="750kbs"> Regular 3G<br>
-  <input type="radio" name="bandwidth" value="1.5mbs"> Good 3G<br>
-  <input type="radio" name="bandwidth" value="4mbs"> Regular 4G<br>
-  <input type="radio" name="bandwidth" value="2mbs"> ADSL<br>
-  <input type="radio" name="bandwidth" value="30mbs"> WiFi
-  
+                <div class="rcorners4 ">
+                    <input type="radio" name="bandwidth" value="-1" onclick="onManualBandwidthSet(-1)"> Auto<br>
+                    <input type="radio" name="bandwidth" value="50kbs" onclick="onManualBandwidthSet(0.1)"> GPRS<br>
+                    <input type="radio" name="bandwidth" value="250kbs" onclick="onManualBandwidthSet(0.2)"> Regular 2G<br>
+                    <input type="radio" name="bandwidth" value="450kbs" onclick="onManualBandwidthSet(0.4)"> Good 2G<br>
+                    <input type="radio" name="bandwidth" value="750kbs" onclick="onManualBandwidthSet(0.75)"> Regular 3G<br>
+                    <input type="radio" name="bandwidth" value="1.5mbs" onclick="onManualBandwidthSet(1)"> Good 3G<br>
+                    <input type="radio" name="bandwidth" value="4mbs" onclick="onManualBandwidthSet(1.5)"> Regular 4G<br>
+                    <input type="radio" name="bandwidth" value="2mbs" onclick="onManualBandwidthSet(2)"> ADSL<br>
+                    <input type="radio" name="bandwidth" value="30mbs" onclick="onManualBandwidthSet(30)"> WiFi
+
                 </div>
             </td>
         </tr>
