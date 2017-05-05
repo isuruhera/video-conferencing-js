@@ -180,6 +180,8 @@ function serverOnMessageCallback(message) {
         onRemoteBitrateChange(signal.bitrate);
     } else if (signal.chat) {
         onChatMessageReceived(signal);
+    } else if (signal.type == TYPE_REQUEST_OFFER) {
+        peerConnection.createOffer().then(onCreateVideoDesc).catch(errorHandler);
     }
 }
 
