@@ -261,7 +261,11 @@ function initVideoStream(addToConnection) {
 
 //Called when the remote party send a chat message
 function onChatMessageReceived(data) {
-
+    var element = document.getElementById("comment");
+    var currentText = element.value;
+    var message = data.name + " : " + data.chat + "\n";
+    currentText = currentText + message;
+    element.value = currentText;
 }
 
 //Called when the user send a chat message
@@ -274,6 +278,14 @@ function onSendChatMessage() {
         'id': id,
         "name": name
     }));
+
+    var element = document.getElementById("comment");
+    var currentText = element.value;
+    var message = name + " : " + message + "\n";
+    currentText = currentText + message;
+    element.value = currentText;
+
+    textBox.value = "";
 }
 
 function onManualBandwidthSet(val) {
