@@ -6,5 +6,6 @@
     "node": "6.10.2",
     "npm": "3.10.10"
 
-  }
+  },
+  "scripts": {"start": "node server/server.js"}
 }
