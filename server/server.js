@@ -22,37 +22,37 @@ const serverConfig = {
 var handleRequest = function(request, response) {
     if (request.url === '/') {
         response.writeHead(200, { 'Content-Type': 'text/html' });
-        response.end(fs.readFileSync('client/login.html'));
+        response.end(fs.readFileSync('./client/login.html'));
     } else if (request.url === '/app.js') {
         response.writeHead(200, { 'Content-Type': 'application/javascript' });
-        response.end(fs.readFileSync('client/app.js'));
+        response.end(fs.readFileSync('./client/app.js'));
     } else if (request.url === '/app') {
         response.writeHead(200, { 'Content-Type': 'text/html' });
-        response.end(fs.readFileSync('client/index.html'));
+        response.end(fs.readFileSync('./client/index.html'));
     } else if (request.url === "/style.css") {
         response.writeHead(200, { 'Content-Type': 'text/css' });
-        response.end(fs.readFileSync('client/style.css'));
+        response.end(fs.readFileSync('./client/style.css'));
     } else if (request.url === "/img/slide_01.jpg") {
         response.writeHead(200, { 'Content-Type': 'image/jpeg' });
-        response.end(fs.readFileSync('client/img/slide_01.jpg'));
+        response.end(fs.readFileSync('./client/img/slide_01.jpg'));
     } else if (request.url === "/img/slide_02.jpg") {
         response.writeHead(200, { 'Content-Type': 'image/jpeg' });
-        response.end(fs.readFileSync('client/img/slide_01.jpg'));
+        response.end(fs.readFileSync('./client/img/slide_01.jpg'));
     } else if (request.url === "/img/logo.png") {
         response.writeHead(200, { 'Content-Type': 'image/png' });
-        response.end(fs.readFileSync('client/img/logo.png'));
+        response.end(fs.readFileSync('./client/img/logo.png'));
     } else if (request.url === "/img/HeaderImg.png") {
         response.writeHead(200, { 'Content-Type': 'image/png' });
-        response.end(fs.readFileSync('client/img/HeaderImg.png'));
+        response.end(fs.readFileSync('./client/img/HeaderImg.png'));
     } else if (request.url === "/img/Logo_Clear2.png") {
         response.writeHead(200, { 'Content-Type': 'image/png' });
-        response.end(fs.readFileSync('client/img/Logo_Clear2.png'));
+        response.end(fs.readFileSync('./client/img/Logo_Clear2.png'));
     } else if (request.url === "/face.js") {
         response.writeHead(200, { 'Content-Type': 'application/javascript' });
-        response.end(fs.readFileSync('client/lib/face-min.js'));
+        response.end(fs.readFileSync('./client/lib/face-min.js'));
     } else if (request.url === "/tracking.js") {
         response.writeHead(200, { 'Content-Type': 'application/javascript' });
-        response.end(fs.readFileSync('client/lib/tracking-min.js'));
+        response.end(fs.readFileSync('./client/lib/tracking-min.js'));
     } else {
         console.log("Unknown path " + request.url);
         response.writeHead(404);
