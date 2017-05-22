@@ -3,6 +3,8 @@
   "description": "a really cool app",
   "version": "1.0.0",
   "engines": {
-    "node": "6.9.4"
+    "node": "6.10.2",
+    "npm": "3.10.10"
+
   }
 }
