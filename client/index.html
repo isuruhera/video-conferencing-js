@@ -3,46 +3,29 @@
 
 <head>
     <script src="app.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- jQuery and Bootstrap JS files -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
 
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase-auth.js"></script>
 
+    <script src="tracking.js"></script>
+    <script src="face.js"></script>
 
-    <style>
-        .rcorners2 {
-            border-radius: 25px;
-            border: 1px solid #0d98da;
-            padding: 20px;
-            width: 400px;
-            height: 400px;
-            margin: 20px;
-        }
-        
-        .rcorners3 {
-            border-radius: 25px;
-            /*border: 2px solid #0d98da;*/
-            padding: 20px;
-            width: 600px;
-            height: 200px;
-            margin: 20px;
-        }
-        
-        .rcorners4 {
-            border-radius: 25px;
-            border: 1px solid #0d98da;
-            padding: 20px;
-            width: 150px;
-            height: 220px;
-            margin: 20px;
-        }
-    </style>
+    <!-- CSS - Bootstrap 3.3.7 -->
+    <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+
+    <!-- CSS - Custom styling -->
+    <link type="text/css" rel="stylesheet" href="style.css">
+
     <script>
         // Initialize Firebase
-        // TODO: Replace with your project's customized code snippet
         var config = {
             apiKey: "AIzaSyD9_jmiGv51xB9SQSZwv31isZNI3Eb8Aq4",
             authDomain: "webrtc750.firebaseapp.com",
@@ -53,26 +36,30 @@
         };
         firebase.initializeApp(config);
 
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                // User is signed in.
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) { // User is signed in.
                 document.getElementById('disName').innerHTML = firebase.auth().currentUser.displayName;
             } else {
                 // No user is signed in.
                 window.location.replace("/");
-
             }
         });
 
         function logout() {
-            firebase.auth().signOut().then(function() {
-                // Sign-out successful.
-            }).catch(function(error) {
-                // An error happened.
+            firebase.auth().signOut().then(function () {
+                console.log("User signed out");
+            }).catch(function (error) {
+                console.log("Unable to sign out - error " + error);
             });
         }
     </script>
-
+<style>
+  video, canvas {
+    margin-left: 280px;
+    margin-top: 20px;
+    position: absolute;
+  }
+    </style>
 
 </head>
 
@@ -88,8 +75,6 @@
                         <td rowspan="2">
 
                             <button id="signOut" type="button" onclick="logout();" class="btn btn-default" style="color: #fff; background-color: transparent;float: right; margin-right: 15px;">Sign out</button>
-                            <!--<div id="signOut" style="color: white;font-size: 18px; float: right;">Sign out
-                            </div>-->
                             <div id="disName" style="float: right; color: white;font-size: 18px; margin-right: 20px;margin-top: 5px;">
                             </div>
                         </td>
@@ -98,37 +83,32 @@
                         <td style="color: white; font-size: 13px; vertical-align: top;width: 250px;">Video Chat. Made Easy
                         </td>
                     </tr>
-                    <!--<tr>
-                        <td>
-                            <div id="disName" style="float: right; color: white;font-size: 18px;">kkkj
-                            </div>
-                        </td>
-
-                    </tr>-->
                 </table>
-
-
-
             </td>
 
         </tr>
-        <tr style="align-content: center;">
-            <td style="width:20%;">
-            </td>
-            <td style="width:30%;" align="center">
-                <div class="rcorners2 ">
-                    <video id="localVideo" autoplay muted style="width:400px; "></video>
-                </div>
+    </table>
+    <!--<table>
 
-            </td>
-            <td style="width:30%;" align="center">
-                <div class="rcorners2 ">
-                    <video id="remoteVideo" autoplay style="width:400px; "></video>
-                </div>
+        <tr>
+            <td>
+                <div style="position:relative">
 
+                    <div style="top: 250px;">
+                        <video class="" style="position:absolute; border-radius: 25px; border: 1px solid #0d98da; width: 400px; height: 300px;" id="localVideo" preloadv autoplay loop muted></video>
+
+                        <canvas id="canvas" style="width: 400px; height: 300px; position:absolute" class=""></canvas>
+
+                        <video class="" id="remoteVideo" autoplay style="border-radius: 25px; border: 1px solid #0d98da; width: 400px; height: 300px; margin-left: 425px"></video>
+
+                    </div>
+
+
+
+                </div>
             </td>
-            <td style="width:20%; ">
-                <div class="rcorners4 ">
+            <td>
+                <div class=" " style="position:relative">
                     <input type="radio" name="bandwidth" value="-1" onclick="onManualBandwidthSet(-1)"> Auto<br>
                     <input type="radio" name="bandwidth" value="50kbs" onclick="onManualBandwidthSet(0.1)"> GPRS<br>
                     <input type="radio" name="bandwidth" value="250kbs" onclick="onManualBandwidthSet(0.2)"> Regular 2G<br>
@@ -142,14 +122,48 @@
                 </div>
             </td>
         </tr>
-        <tr>
+    </table>
+    
+    
+    -->
+    
+
+  <div >
+    <div >
+      <video id="localVideo" width="320" height="240" style="border-radius: 25px; border: 1px solid #0d98da;" preload autoplay loop muted></video>
+      <canvas id="canvas" width="320" height="240"></canvas>
+    </div>
+  </div>
+  
+  <div>
+<video id="remoteVideo" width="320" height="240" style="margin-left: 625px; border-radius: 25px; border: 1px solid #0d98da;" preload autoplay loop muted></video>
+  </div>
+
+<div>
+	<div class="rcorners4" >
+  	<input type="radio" name="bandwidth" value="-1" onclick="onManualBandwidthSet(-1)"> Auto<br>
+                    <input type="radio" name="bandwidth" value="50kbs" onclick="onManualBandwidthSet(0.1)"> GPRS<br>
+                    <input type="radio" name="bandwidth" value="250kbs" onclick="onManualBandwidthSet(0.2)"> Regular 2G<br>
+                    <input type="radio" name="bandwidth" value="450kbs" onclick="onManualBandwidthSet(0.4)"> Good 2G<br>
+                    <input type="radio" name="bandwidth" value="750kbs" onclick="onManualBandwidthSet(0.75)"> Regular 3G<br>
+                    <input type="radio" name="bandwidth" value="1.5mbs" onclick="onManualBandwidthSet(1)"> Good 3G<br>
+                    <input type="radio" name="bandwidth" value="4mbs" onclick="onManualBandwidthSet(1.5)"> Regular 4G<br>
+                    <input type="radio" name="bandwidth" value="2mbs" onclick="onManualBandwidthSet(2)"> ADSL<br>
+                    <input type="radio" name="bandwidth" value="30mbs" onclick="onManualBandwidthSet(30)"> WiFi
+
+  </div>
+
+</div>
+    
+    <table width="100%" style="margin-top: 300px;">
+        <tr style="align-content: center;">
             <td style="width:20%; ">
             </td>
             <td style="width:30%; " align="center ">
-                <input type="button" id="start" class="btn btn-primary" onclick="start(true)" value="Start Video"></input>
+                <input type="button" id="start" class="btn btn-primary themed" onclick="start(true)" value="Start Video"></input>
             </td>
             <td style="width:30%; " align="center ">
-                <button type="button " class="btn btn-primary ">End</button>
+                <button type="button " class="btn btn-primary themed">End</button>
             </td>
             <td style="width:20%; ">
             </td>
@@ -157,7 +171,7 @@
 
         <tr>
             <td align="center" colspan="4">
-                <div style="width:50%; margin: 30px;"> <textarea class="form-control" rows="5" id="comment"></textarea>
+                <div style="width:50%; margin: 30px;"> <textarea class="form-control" rows="5" id="comment" readonly></textarea>
                     <br>
 
                     <input type="text" class="form-control" id="chat" autocomplete="off">
@@ -166,21 +180,52 @@
         </tr>
         <tr>
             <td align="center" colspan="4">
-                <!--<span class="label label-primary">Send</span><br>-->
-                <button class="btn btn-primary" onclick="onSendChatMessage();">Send</button>
+                <button class="btn btn-primary themed" onclick="onSendChatMessage();">Send</button>
             </td>
         </tr>
     </table>
     <br />
 
-    <!--<input type="button" id="start" onclick="start(true)" value="Start Video"></input>
-
-        <input id="chat" autocomplete="off" />-->
-
     <script src="https://cdn.webrtc-experiment.com/getStats.js"></script>
     <script type="text/javascript">
         pageReady();
     </script>
+
+    <script>
+        window.onload = function () {
+            var video = document.getElementById('localVideo');
+            var canvas = document.getElementById('canvas');
+            var context = canvas.getContext('2d');
+
+            var tracker = new tracking.ObjectTracker('face');
+            tracker.setInitialScale(4);
+            tracker.setStepSize(2);
+            tracker.setEdgesDensity(0.1);
+
+            tracking.track('#localVideo', tracker, {
+                camera: true
+            });
+
+            tracker.on('track', function (event) {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+
+                event.data.forEach(function (rect) {
+                    context.strokeStyle = '#a64ceb';
+                    context.strokeRect(rect.x, rect.y, rect.width, rect.height);
+                    context.font = '11px Helvetica';
+                    context.fillStyle = "#fff";
+                    context.fillText('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
+                    context.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
+                });
+            });
+
+            var gui = new dat.GUI();
+            gui.add(tracker, 'edgesDensity', 0.1, 0.5).step(0.01);
+            gui.add(tracker, 'initialScale', 1.0, 10.0).step(0.1);
+            gui.add(tracker, 'stepSize', 1, 5).step(0.1);
+        };
+    </script>
+
 </body>
 
 </html>
