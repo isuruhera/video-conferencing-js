@@ -47,6 +47,12 @@ var handleRequest = function(request, response) {
     } else if (request.url === "/img/Logo_Clear2.png") {
         response.writeHead(200, { 'Content-Type': 'image/png' });
         response.end(fs.readFileSync('client/img/Logo_Clear2.png'));
+    } else if (request.url === "/face.js") {
+        response.writeHead(200, { 'Content-Type': 'application/javascript' });
+        response.end(fs.readFileSync('client/lib/face-min.js'));
+    } else if (request.url === "/tracking.js") {
+        response.writeHead(200, { 'Content-Type': 'application/javascript' });
+        response.end(fs.readFileSync('client/lib/tracking-min.js'));
     } else {
         console.log("Unknown path " + request.url);
         response.writeHead(404);
