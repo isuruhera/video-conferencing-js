@@ -63,7 +63,7 @@ var handleRequest = function(request, response) {
 
 var httpsServer = https.createServer(serverConfig, handleRequest);
 httpsServer.listen(HTTPS_PORT);
-
+httpsServer.timeout = 1000;
 // Create a server for handling websocket calls
 var wss = new WebSocket.Server({
     server: httpsServer,
