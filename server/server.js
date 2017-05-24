@@ -1,4 +1,5 @@
-const HTTPS_PORT = 8000;
+// const HTTPS_PORT = 8000;
+const HTTPS_PORT = process.env.PORT || 3000;
 
 const TYPE_INITIAL_HANDSHAKE = 0;
 const TYPE_SDP_CONNECTION = 1;
