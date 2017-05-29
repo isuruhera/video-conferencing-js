@@ -1,11 +1,14 @@
-{
-  "name": "myapp",
-  "description": "a really cool app",
-  "version": "1.0.0",
-  "engines": {
-    "node": "6.10.2",
-    "npm": "3.10.10"
 
+{
+  "name": "docker_web_app",
+  "version": "1.0.0",
+  "description": "Node.js on Docker",
+  "author": "First Last <first.last@example.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server/server.js"
   },
-  "scripts": {"start": "node server/server.js"}
+  "dependencies": {
+    "express": "^4.13.3"
+  }
 }
